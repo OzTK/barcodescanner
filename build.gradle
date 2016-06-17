@@ -10,7 +10,6 @@ buildscript {
 }
 
 allprojects {
-    group = 'com.github.OzTK'
     version = '1.8.4'
 
     repositories {
