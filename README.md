@@ -1,3 +1,4 @@
+[![](https://jitpack.io/v/OzTK/barcodescanner.svg)](https://jitpack.io/#OzTK/barcodescanner)
 Introduction
 ============
 
