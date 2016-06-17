@@ -1,6 +1,7 @@
 package me.dm7.barcodescanner.core;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Point;
 import android.hardware.Camera;
 import android.os.Handler;
@@ -25,30 +26,26 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     private boolean mSurfaceCreated = false;
     private Camera.PreviewCallback mPreviewCallback;
 
-    public CameraPreview(Context context) {
+    public CameraPreview(Context context, Camera camera, Camera.PreviewCallback previewCallback) {
         super(context);
+        init(camera, previewCallback);
     }
 
-    public CameraPreview(Context context, AttributeSet attrs) {
+    public CameraPreview(Context context, AttributeSet attrs, Camera camera, Camera.PreviewCallback previewCallback) {
         super(context, attrs);
+        init(camera, previewCallback);
+    }
+
+    public void init(Camera camera, Camera.PreviewCallback previewCallback) {
+        setCamera(camera, previewCallback);
+        mAutoFocusHandler = new Handler();
+        getHolder().addCallback(this);
+        getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
     }
 
     public void setCamera(Camera camera, Camera.PreviewCallback previewCallback) {
         mCamera = camera;
         mPreviewCallback = previewCallback;
-        mAutoFocusHandler = new Handler();
-    }
-
-    public void initCameraPreview() {
-        if(mCamera != null) {
-            getHolder().addCallback(this);
-            getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-            if(mPreviewing) {
-                requestLayout();
-            } else {
-                showCameraPreview();
-            }
-        }
     }
 
     @Override
@@ -74,6 +71,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     public void showCameraPreview() {
         if(mCamera != null) {
             try {
+                getHolder().addCallback(this);
                 mPreviewing = true;
                 setupCameraParameters();
                 mCamera.setPreviewDisplay(getHolder());
@@ -107,6 +105,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         if(mCamera != null) {
             try {
                 mPreviewing = false;
+                getHolder().removeCallback(this);
                 mCamera.cancelAutoFocus();
                 mCamera.setOneShotPreviewCallback(null);
                 mCamera.stopPreview();
@@ -189,8 +188,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         List<Camera.Size> sizes = mCamera.getParameters().getSupportedPreviewSizes();
         int w = getWidth();
         int h = getHeight();
-        if (w < h) {
-            // The view is in portrait -> swap h & w to keep ratio consistent
+        if (DisplayUtils.getScreenOrientation(getContext()) == Configuration.ORIENTATION_PORTRAIT) {
             int portraitWidth = h;
             h = w;
             w = portraitWidth;
