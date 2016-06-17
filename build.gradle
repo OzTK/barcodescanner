@@ -4,12 +4,13 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.5.0'
+        classpath 'com.android.tools.build:gradle:2.1.2'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.3'
     }
 }
 
 allprojects {
-    group = 'me.dm7.barcodescanner'
+    group = 'com.github.OzTK'
     version = '1.8.4'
 
     repositories {
