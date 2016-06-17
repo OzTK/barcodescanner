@@ -27,10 +27,10 @@ public abstract class BarcodeScannerView extends FrameLayout implements Camera.P
         super(context, attributeSet);
     }
 
-    public final void setupLayout(Camera camera) {
+    public final void setupLayout(Camera camera, boolean adjustViewSize) {
         removeAllViews();
 
-        mPreview = new CameraPreview(getContext(), camera, this);
+        mPreview = new CameraPreview(getContext(), camera, this, adjustViewSize);
         RelativeLayout relativeLayout = new RelativeLayout(getContext());
         relativeLayout.setGravity(Gravity.CENTER);
         relativeLayout.setBackgroundColor(Color.BLACK);
@@ -57,17 +57,21 @@ public abstract class BarcodeScannerView extends FrameLayout implements Camera.P
         return new ViewFinderView(context);
     }
 
-    public void startCamera(int cameraId) {
+    public void startCamera(int cameraId, boolean adjustViewSize) {
         if(mCameraHandlerThread == null) {
             mCameraHandlerThread = new CameraHandlerThread(this);
         }
-        mCameraHandlerThread.startCamera(cameraId);
+        mCameraHandlerThread.startCamera(cameraId, adjustViewSize);
     }
 
-    public void setupCameraPreview(Camera camera) {
+    public void startCamera(int cameraId) {
+        startCamera(cameraId, true);
+    }
+
+    public void setupCameraPreview(Camera camera, boolean adjustViewSize) {
         mCamera = camera;
         if(mCamera != null) {
-            setupLayout(mCamera);
+            setupLayout(mCamera, adjustViewSize);
             mViewFinderView.setupViewFinder();
             if(mFlashState != null) {
                 setFlash(mFlashState);
@@ -77,7 +81,11 @@ public abstract class BarcodeScannerView extends FrameLayout implements Camera.P
     }
 
     public void startCamera() {
-        startCamera(-1);
+        startCamera(true);
+    }
+
+    public void startCamera(boolean adjustViewSize) {
+        startCamera(-1, adjustViewSize);
     }
 
     public void stopCamera() {

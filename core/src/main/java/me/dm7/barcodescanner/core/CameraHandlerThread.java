@@ -18,7 +18,7 @@ public class CameraHandlerThread extends HandlerThread {
         start();
     }
 
-    public void startCamera(final int cameraId) {
+    public void startCamera(final int cameraId, final boolean adjustViewSize) {
         Handler localHandler = new Handler(getLooper());
         localHandler.post(new Runnable() {
             @Override
@@ -28,7 +28,7 @@ public class CameraHandlerThread extends HandlerThread {
                 mainHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        mScannerView.setupCameraPreview(camera);
+                        mScannerView.setupCameraPreview(camera, adjustViewSize);
                     }
                 });
             }

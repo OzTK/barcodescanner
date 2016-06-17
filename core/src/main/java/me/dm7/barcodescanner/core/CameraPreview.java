@@ -24,10 +24,17 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     private boolean mPreviewing = true;
     private boolean mAutoFocus = true;
     private boolean mSurfaceCreated = false;
+    private boolean mAdjustViewSize = true;
     private Camera.PreviewCallback mPreviewCallback;
 
     public CameraPreview(Context context, Camera camera, Camera.PreviewCallback previewCallback) {
         super(context);
+        init(camera, previewCallback);
+    }
+
+    public CameraPreview(Context context, Camera camera, Camera.PreviewCallback previewCallback, boolean adjustViewSize) {
+        super(context);
+        mAdjustViewSize = adjustViewSize;
         init(camera, previewCallback);
     }
 
@@ -120,7 +127,9 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         Camera.Parameters parameters = mCamera.getParameters();
         parameters.setPreviewSize(optimalSize.width, optimalSize.height);
         mCamera.setParameters(parameters);
-        adjustViewSize(optimalSize);
+        if (mAdjustViewSize) {
+            adjustViewSize(optimalSize);
+        }
     }
 
     private void adjustViewSize(Camera.Size cameraSize) {

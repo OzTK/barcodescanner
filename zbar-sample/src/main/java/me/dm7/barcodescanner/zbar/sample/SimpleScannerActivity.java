@@ -25,7 +25,7 @@ public class SimpleScannerActivity extends BaseScannerActivity implements ZBarSc
     public void onResume() {
         super.onResume();
         mScannerView.setResultHandler(this);
-        mScannerView.startCamera();
+        mScannerView.startCamera(false);
     }
 
     @Override
